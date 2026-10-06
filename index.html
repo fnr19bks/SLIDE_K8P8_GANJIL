@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Storytelling &amp; Presentasi — Informatika Kelas VIII</title>
+<style>
+  :root{
+    --bg:#080B20;
+    --bg2:#131A3A;
+    --card:rgba(255,255,255,.07);
+    --line:rgba(120,200,255,.28);
+    --accent:#22D3EE;
+    --accent2:#FBBF24;
+    --green:#4ADE80;
+    --pink:#F472B6;
+    --text:#EAF3FC;
+    --muted:#A8C0DA;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden;background:#04070F;
+    font-family:"Segoe UI",Inter,system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    color:var(--text);-webkit-font-smoothing:antialiased}
+
+  #stage{
+    position:absolute;top:50%;left:50%;
+    width:1280px;height:720px;
+    transform-origin:center center;
+    background:
+      radial-gradient(900px 520px at 12% -10%, #1B3A6B 0%, transparent 60%),
+      radial-gradient(820px 520px at 105% 110%, #2A1B4D 0%, transparent 62%),
+      linear-gradient(160deg,var(--bg) 0%, var(--bg2) 100%);
+    border-radius:18px;overflow:hidden;
+    box-shadow:0 30px 90px rgba(0,0,0,.65);
+  }
+  #stage::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(115deg,rgba(34,211,238,.06),transparent 40%,rgba(251,191,36,.05));
+  }
+
+  .slide{
+    position:absolute;inset:0;padding:38px 56px 44px;
+    opacity:0;visibility:hidden;
+    transform:translateY(26px) scale(.985);
+    transition:opacity .5s ease, transform .55s cubic-bezier(.22,.9,.3,1), visibility .5s;
+    display:flex;flex-direction:column;gap:14px;
+  }
+  .slide.active{opacity:1;visibility:visible;transform:none}
+
+  /* ---------- TYPO ---------- */
+  .eyebrow{
+    font-size:14px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--accent);font-weight:700;
+  }
+  h1.title{font-size:44px;line-height:1.1;font-weight:800;letter-spacing:-.5px}
+  h2.title{font-size:36px;line-height:1.12;font-weight:800;letter-spacing:-.4px}
+  .sub{font-size:20px;color:var(--muted)}
+  .lead{font-size:23px;line-height:1.42;color:#D7E7F7;max-width:1080px}
+  .hl{color:var(--accent2)}
+  .hl2{color:var(--accent)}
+  .hl3{color:var(--green)}
+
+  ul.bullets{list-style:none;display:flex;flex-direction:column;gap:11px;margin-top:2px}
+  ul.bullets li{font-size:24px;line-height:1.32;padding-left:42px;position:relative}
+  ul.bullets li::before{
+    content:"";position:absolute;left:8px;top:12px;width:15px;height:15px;
+    border-radius:5px;background:linear-gradient(135deg,var(--accent),#0ea5b7);
+    box-shadow:0 0 14px rgba(34,211,238,.55);
+  }
+  ul.bullets.gold li::before{background:linear-gradient(135deg,var(--accent2),#d97706);box-shadow:0 0 14px rgba(251,191,36,.5)}
+  ul.bullets.green li::before{background:linear-gradient(135deg,var(--green),#15803d);box-shadow:0 0 14px rgba(74,222,128,.5)}
+
+  ol.steps{list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:10px}
+  ol.steps li{counter-increment:s;font-size:23px;line-height:1.32;padding-left:52px;position:relative}
+  ol.steps li::before{
+    content:counter(s);position:absolute;left:0;top:-2px;width:34px;height:34px;
+    display:grid;place-items:center;border-radius:50%;
+    background:rgba(34,211,238,.15);border:2px solid var(--accent);
+    color:var(--accent);font-weight:800;font-size:17px;
+  }
+
+  /* ---------- CARDS ---------- */
+  .grid{display:grid;gap:14px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:16px 18px;backdrop-filter:blur(4px);
+  }
+  .card h3{font-size:21px;font-weight:800;margin-bottom:6px;color:var(--accent)}
+  .card p{font-size:18px;line-height:1.38;color:#CBDFF2}
+  .card.gold h3{color:var(--accent2)}
+  .card.gold{border-color:rgba(251,191,36,.4)}
+  .card.green h3{color:var(--green)}
+  .card.green{border-color:rgba(74,222,128,.4)}
+  .card.pink h3{color:var(--pink)}
+  .card.pink{border-color:rgba(244,114,182,.4)}
+
+  .chips{display:flex;gap:10px;flex-wrap:wrap}
+  .chip{
+    font-size:16px;font-weight:700;padding:7px 15px;border-radius:999px;
+    background:rgba(34,211,238,.12);border:1px solid rgba(34,211,238,.45);color:#B9F1FA;
+  }
+  .chip.gold{background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.45);color:#FDE68A}
+
+  /* ---------- CODE ---------- */
+  .code{
+    font-family:"Consolas","Fira Code","Courier New",monospace;
+    background:rgba(0,0,0,.42);border-left:5px solid var(--accent);
+    border-radius:12px;padding:16px 20px;font-size:20px;line-height:1.48;
+    color:#CFEAF9;white-space:pre-wrap;
+  }
+  .code.sm{font-size:18px;line-height:1.45}
+  .code b{color:var(--accent2)}
+
+  /* ---------- TIMELINE ---------- */
+  .timeline{display:grid;gap:12px;margin-top:6px}
+  .tl{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 14px;
+    display:flex;flex-direction:column;gap:7px;
+  }
+  .tl .num{
+    width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--accent),#0891b2);color:#04121F;font-weight:900;font-size:18px;
+  }
+  .tl.gold .num{background:linear-gradient(135deg,var(--accent2),#d97706)}
+  .tl b{font-size:19px;line-height:1.2}
+  .tl p{font-size:15px;color:var(--muted);line-height:1.32}
+
+  /* ---------- TABLE ---------- */
+  table{width:100%;border-collapse:collapse;font-size:16px;border-radius:12px;overflow:hidden}
+  th,td{padding:8px 11px;text-align:left;border-bottom:1px solid rgba(120,200,255,.18);vertical-align:top}
+  th{background:rgba(34,211,238,.16);color:#BFF3FB;font-size:15px;letter-spacing:.03em}
+  td:first-child{font-weight:700;color:#EAF3FC}
+  tr:nth-child(even) td{background:rgba(255,255,255,.03)}
+  table.tight{font-size:14px}
+  table.tight th,table.tight td{padding:6px 9px}
+
+  /* ---------- FRAGMENTS ---------- */
+  .f{opacity:0;transform:translateY(16px);transition:opacity .45s ease, transform .45s cubic-bezier(.22,.9,.3,1)}
+  .f.show{opacity:1;transform:none}
+
+  /* ---------- HUD ---------- */
+  #hud{
+    position:fixed;left:0;right:0;bottom:14px;display:flex;align-items:center;
+    justify-content:center;gap:12px;z-index:50;
+  }
+  #hud button{
+    width:44px;height:44px;border-radius:50%;border:1px solid rgba(34,211,238,.5);
+    background:rgba(6,20,40,.85);color:var(--accent);font-size:17px;cursor:pointer;
+    display:grid;place-items:center;transition:.2s;
+  }
+  #hud button:hover{background:rgba(34,211,238,.2);transform:translateY(-2px)}
+  #counter{font-size:14px;color:#8FB0CE;font-weight:700;letter-spacing:.1em;min-width:70px;text-align:center}
+  #bar{position:fixed;left:0;bottom:0;height:4px;width:0%;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    transition:width .35s ease;z-index:60}
+  #hint{
+    position:fixed;top:14px;right:18px;font-size:13px;color:#7E9EBD;z-index:50;
+    letter-spacing:.05em;transition:opacity .6s;
+  }
+
+  /* ---------- COVER ---------- */
+  .cover{justify-content:center;gap:20px;padding-left:74px}
+  .cover h1{font-size:58px;line-height:1.06;font-weight:900;letter-spacing:-1.2px}
+  .grad{background:linear-gradient(100deg,#22D3EE 10%,#FBBF24 90%);
+        -webkit-background-clip:text;background-clip:text;color:transparent}
+  .cover .sub{font-size:22px}
+  .rule{width:110px;height:6px;border-radius:6px;
+        background:linear-gradient(90deg,var(--accent),var(--accent2))}
+  .quote{font-size:29px;font-weight:800;line-height:1.3;color:#EAF3FC}
+
+  /* ---------- SLIDE NUMBER / FOOTER ---------- */
+  .snum{
+    position:absolute;top:18px;right:32px;font-size:13px;font-weight:800;
+    letter-spacing:.14em;color:#6E8CAA;
+  }
+  .foot{margin-top:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding-top:6px}
+  .pill{
+    font-size:14px;font-weight:700;padding:6px 14px;border-radius:999px;
+    background:rgba(255,255,255,.05);border:1px solid rgba(120,200,255,.22);color:#A8C0DA;
+  }
+  .pill.time{border-color:rgba(251,191,36,.45);color:#FCD34D}
+  .pill.talk{border-color:rgba(74,222,128,.45);color:#86EFAC}
+
+  /* ---------- CHARTS ---------- */
+  .barchart{display:flex;align-items:flex-end;gap:24px;height:196px;
+    border-bottom:2px solid rgba(120,200,255,.35);padding:0 8px}
+  .bar{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+  .bar .val{font-size:17px;font-weight:800;color:#FCD34D;margin-bottom:5px}
+  .bar .col{width:100%;border-radius:10px 10px 0 0;
+    background:linear-gradient(180deg,#22D3EE,#0E7490);transition:height .7s ease}
+  .bar .col.hi{background:linear-gradient(180deg,#FBBF24,#D97706);
+    box-shadow:0 0 20px rgba(251,191,36,.45)}
+  .barlabels{display:flex;gap:24px;padding:8px 8px 0}
+  .barlabels span{flex:1;text-align:center;font-size:14px;color:var(--muted);line-height:1.25}
+  .mini .barchart{height:118px;gap:16px}
+  .mini .bar .val{font-size:14px;margin-bottom:3px}
+  .mini .barlabels span{font-size:13px}
+
+  .svgchart{width:100%;height:auto;display:block}
+
+  .pie{
+    width:158px;height:158px;border-radius:50%;flex:0 0 auto;
+    background:conic-gradient(#22D3EE 0 35%, #FBBF24 35% 60%, #4ADE80 60% 80%,
+                              #F472B6 80% 95%, #94A3B8 95% 100%);
+    box-shadow:0 0 30px rgba(34,211,238,.25), inset 0 0 0 3px rgba(255,255,255,.12);
+  }
+  .legend{display:flex;flex-direction:column;gap:7px;font-size:16px;color:#CBDFF2}
+  .legend i{display:inline-block;width:13px;height:13px;border-radius:4px;margin-right:9px}
+  .lg-c1{background:#22D3EE}.lg-c2{background:#FBBF24}.lg-c3{background:#4ADE80}
+  .lg-c4{background:#F472B6}.lg-c5{background:#94A3B8}
+
+  /* ---------- WIREFRAME ---------- */
+  .wire{border:2px dashed rgba(120,200,255,.4);border-radius:16px;padding:14px;
+        display:flex;flex-direction:column;gap:10px;background:rgba(255,255,255,.03)}
+  .wt{background:rgba(34,211,238,.16);border:1px solid rgba(34,211,238,.45);
+      border-radius:10px;padding:9px 14px;font-size:16px;font-weight:800;color:#BFF3FB}
+  .wrow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .wkpi{background:rgba(251,191,36,.13);border:1px solid rgba(251,191,36,.4);
+        border-radius:10px;padding:10px;text-align:center;font-size:19px;font-weight:800;color:#FDE68A}
+  .wkpi small{display:block;font-size:12px;font-weight:600;color:#A8C0DA;margin-top:3px}
+  .wmid{display:grid;grid-template-columns:1.6fr 1fr;gap:10px}
+  .wbox{border:1px solid rgba(120,200,255,.3);border-radius:10px;padding:10px 14px;
+        font-size:15px;color:#CBDFF2;background:rgba(255,255,255,.04);min-height:96px}
+  .wbox b{display:block;font-size:14px;color:#BFF3FB;margin-bottom:5px;letter-spacing:.06em}
+
+  /* ---------- NOTES ---------- */
+  #notes{
+    position:fixed;left:0;right:0;bottom:0;max-height:36vh;overflow:auto;
+    background:rgba(3,10,22,.97);border-top:3px solid var(--accent);
+    padding:16px 26px;font-size:15px;line-height:1.55;color:#CBDFF2;
+    display:none;z-index:90;
+  }
+  #notes.show{display:block}
+  #notes b{color:var(--accent2)}
+  .note{display:none}
+</style>
+</head>
+<body>
+
+<div id="stage">
+
+  <!-- ============ 1 ============ -->
+  <section class="slide cover active">
+    <span class="snum">01 / 24</span>
+    <p class="eyebrow f">SMP NEGERI 19 KOTA BEKASI · TIM MGMP INFORMATIKA</p>
+    <div class="rule f"></div>
+    <h1 class="f">Data Storytelling:<br><span class="grad">Bercerita dengan Grafik</span></h1>
+    <p class="sub f">Informatika · Kelas VIII / Fase D · Elemen: Analisis Data</p>
+    <div class="chips f">
+      <span class="chip">Mini Dashboard</span>
+      <span class="chip">Project Based Learning</span>
+      <span class="chip gold">Deep Learning</span>
+    </div>
+    <div class="note">
+      <b>Slide 1 — Pembuka.</b> Sambut murid, nyalakan proyektor, pastikan rasio 16:9.
+      Jelaskan bahwa hari ini mereka akan menjadi "juru cerita data": mengubah tabel angka menjadi grafik yang bisa dipahami orang lain.
+      Tidak perlu pretest panjang — cukup tanya: "Siapa yang pernah lihat grafik di berita atau media sosial?"
+    </div>
+  </section>
+
+  <!-- ============ 2 ============ -->
+  <section class="slide">
+    <span class="snum">02 / 24</span>
+    <p class="eyebrow">Tujuan Pembelajaran</p>
+    <h2 class="title f">Apa yang Akan Kita Capai?</h2>
+    <ul class="bullets">
+      <li class="f">Menjelaskan fungsi visualisasi data</li>
+      <li class="f">Memilih grafik sesuai tujuan dan data</li>
+      <li class="f">Membaca grafik dengan teliti (B-A-B-K)</li>
+      <li class="f">Menulis kesimpulan yang didukung bukti</li>
+      <li class="f">Merancang mini dashboard kelompok</li>
+    </ul>
+    <p class="lead f">Hari ini kamu jadi <span class="hl">data storyteller</span>: mengubah angka menjadi cerita yang jelas.</p>
+    <div class="foot">
+      <span class="pill time">⏱ 4 menit</span>
+      <span class="pill talk">💬 Tanya jawab lisan</span>
+    </div>
+    <div class="note">
+      <b>Slide 2 — Tujuan.</b> Bacakan tujuan dengan bahasa sederhana. Tekankan kata kunci: <i>memilih</i>, <i>membaca</i>, <i>menyimpulkan</i>.
+      Beri tahu bahwa hasil akhir pertemuan ini adalah satu mini dashboard kelompok yang dipresentasikan singkat.
+    </div>
+  </section>
+
+  <!-- ============ 3 ============ -->
+  <section class="slide">
+    <span class="snum">03 / 24</span>
+    <p class="eyebrow">Pemantik</p>
+    <h2 class="title f">Mana yang Lebih Cepat Dipahami?</h2>
+    <div class="grid g2 f" style="align-items:stretch">
+      <div class="card">
+        <h3>Cara 1 — Deretan Angka</h3>
+        <p style="font-family:Consolas,monospace;font-size:18px;line-height:1.6">
+          Sisa makanan 40 kg<br>Kertas 25 kg<br>Plastik 18 kg<br>Lainnya 7 kg<br>Total 90 kg
+        </p>
+      </div>
+      <div class="card gold mini">
+        <h3>Cara 2 — Grafik Batang</h3>
+        <div class="barchart">
+          <div class="bar"><span class="val">40</span><div class="col hi" style="height:82%"></div></div>
+          <div class="bar"><span class="val">25</span><div class="col" style="height:51%"></div></div>
+          <div class="bar"><span class="val">18</span><div class="col" style="height:37%"></div></div>
+          <div class="bar"><span class="val">7</span><div class="col" style="height:14%"></div></div>
+        </div>
+        <div class="barlabels"><span>Sisa makanan</span><span>Kertas</span><span>Plastik</span><span>Lainnya</span></div>
+      </div>
+    </div>
+    <p class="lead f">❓ Mana yang lebih cepat kamu pahami? <span class="hl2">Mengapa?</span></p>
+    <div class="foot">
+      <span class="pill time">⏱ 5 menit</span>
+      <span class="pill talk">🙋 Tunjuk tangan, jawab lisan</span>
+    </div>
+    <div class="note">
+      <b>Slide 3 — Pemantik.</b> Tampilkan kedua cara, diamkan 5 detik, lalu minta 2–3 murid menjawab.
+      Kunci: grafik menang karena <i>pola langsung terlihat</i> tanpa perlu menghitung. Inilah alasan visualisasi data penting.
+    </div>
+  </section>
+
+  <!-- ============ 4 ============ -->
+  <section class="slide">
+    <span class="snum">04 / 24</span>
+    <p class="eyebrow">Masalah Autentik</p>
+    <h2 class="title f">Misi dari Kepala Sekolah</h2>
+    <div class="card gold f" style="padding:18px 22px">
+      <p style="font-size:23px;line-height:1.45;color:#FDE68A">
+        “Tim Data OSIS, tolong cek dua hal:<br>
+        (1) apakah sampah sekolah makin banyak?<br>
+        (2) bagaimana kebiasaan memakai gawai murid?”
+      </p>
+    </div>
+    <div class="timeline g4 f" style="grid-template-columns:repeat(4,1fr)">
+      <div class="tl"><div class="num">1</div><b>Kumpulkan Data</b><p>Catat sampah / survei gawai</p></div>
+      <div class="tl"><div class="num">2</div><b>Pilih Grafik</b><p>Sesuai tujuan &amp; jenis data</p></div>
+      <div class="tl"><div class="num">3</div><b>Buat Dashboard</b><p>1–3 grafik + angka kunci</p></div>
+      <div class="tl gold"><div class="num">4</div><b>Presentasikan</b><p>Kesimpulan + saran 2 menit</p></div>
+    </div>
+    <div class="foot">
+      <span class="pill time">⏱ 5 menit</span>
+      <span class="pill talk">👥 Diskusi kelompok singkat</span>
+    </div>
+    <div class="note">
+      <b>Slide 4 — Masalah autentik (PjBL).</b> Bacakan "surat" dari kepala sekolah. Kelompok nanti memilih salah satu tema: <b>sampah</b> atau <b>gawai</b>.
+      Tegaskan bahwa ini bukan tugas mengarang, tetapi tugas <i>menyajikan data yang ada</i> menjadi cerita.
+    </div>
+  </section>
+
+  <!-- ============ 5 ============ -->
+  <section class="slide">
+    <span class="snum">05 / 24</span>
+    <p class="eyebrow">Konsep Dasar</p>
+    <h2 class="title f">Apa Itu Visualisasi Data?</h2>
+    <p class="lead f">Cara menampilkan data dalam bentuk <span class="hl2">gambar</span>: grafik, diagram, atau peta warna — agar mudah dibaca dan dipahami.</p>
+    <div class="grid g3">
+      <div class="card f"><h3>🔢 → 🖼️</h3><p>Angka diubah menjadi gambar yang bisa dilihat sekilas.</p></div>
+      <div class="card f"><h3>🔍 Pola Cepat Terlihat</h3><p>Tertinggi, terendah, naik, turun — langsung kelihatan.</p></div>
+      <div class="card gold f"><h3>🧠 Otak Suka Gambar</h3><p>Otak menangkap gambar lebih cepat daripada deretan angka.</p></div>
+    </div>
+    <div class="foot">
+      <span class="pill time">⏱ 4 menit</span>
+      <span class="pill talk">💬 Guru menjelaskan, murid menyimak</span>
+    </div>
+    <div class="note">
+      <b>Slide 5 — Definisi visualisasi.</b> Analogi: melihat denah sekolah jauh lebih mudah daripada membaca daftar "kelas A di koordinat 3,4".
+      Minta murid menyebut satu contoh grafik yang pernah mereka lihat (misal di aplikasi HP, rapor, berita).
+    </div>
+  </section>
+
+  <!-- ============ 6 ============ -->
+  <section class="slide">
+    <span class="snum">06 / 24</span>
+    <p class="eyebrow">Konsep Dasar</p>
+    <h2 class="title f">Visualisasi vs Interpretasi</h2>
+    <div class="grid g2 f">
+      <div class="card">
+        <h3>📊 Visualisasi</h3>
+        <p style="font-size:20px">Menjawab: <b>“Bagaimana data ini ditampilkan?”</b><br><br>Contoh: membuat diagram batang berat sampah.</p>
+      </div>
+      <div class="card gold">
+        <h3>🧩 Interpretasi</h3>
+        <p style="font-size:20px">Menjawab: <b>“Apa artinya dan apa yang perlu dilakukan?”</b><br><br>Contoh: sisa makanan terbanyak → buat kampanye.</p>
+      </div>
+    </div>
+    <p class="lead f">⚠️ Grafik yang bagus <span class="hl">belum berguna</span> kalau tidak ada yang bisa menjelaskan artinya.</p>
+    <div class="foot">
+      <span class="pill time">⏱ 4 menit</span>
+      <span class="pill talk">💬 Murid mengulang dengan kata sendiri</span>
+    </div>
+    <div class="note">
+      <b>Slide 6 — Perbedaan kunci.</b> Analogi: grafik itu seperti <i>foto</i>, interpretasi itu <i>cerita di balik foto</i>.
+      Cek pemahaman cepat: "Kalau saya bilang 'batangnya paling tinggi', itu visualisasi atau interpretasi?" (Jawab: visualisasi/membaca).
+    </div>
+  </section>
+
+  <!-- ============ 7 ============ -->
+  <section class="slide">
+    <span class="snum">07 / 24</span>
+    <p class="eyebrow">Anatomi Grafik</p>
+    <h2 class="title f">6 Bagian Grafik yang Wajib Ada</h2>
+    <table class="tight f">
+      <tr><th style="width:22%">Bagian</th><th style="width:44%">Fungsi</th><th>Contoh</th></tr>
+      <tr><td>Judul</td><td>Menjelaskan isi grafik</td><td>“Jumlah Sampah Sekolah per Jenis (kg), Minggu 1”</td></tr>
+      <tr><td>Sumbu X (mendatar)</td><td>Biasanya kategori atau waktu</td><td>Jenis sampah, hari, minggu</td></tr>
+      <tr><td>Sumbu Y (tegak)</td><td>Biasanya nilai atau jumlah</td><td>Berat sampah (kg)</td></tr>
+      <tr><td>Satuan</td><td>Menjelaskan angka</td><td>kg, jam, persen</td></tr>
+      <tr><td>Legenda</td><td>Arti warna/simbol bila &gt;1 kelompok</td><td>Biru = 8A, Oranye = 8B</td></tr>
+      <tr><td>Sumber data</td><td>Dari mana data berasal</td><td>Pencatatan piket kebersihan</td></tr>
+    </table>
+    <div class="foot">
+      <span class="pill time">⏱ 5 menit</span>
+      <span class="pill talk">🖐️ Murid menunjuk bagian pada grafik</span>
+    </div>
+    <div class="note">
+      <b>Slide 7 — Anatomi grafik.</b> Tampilkan satu grafik contoh di papan/layar, lalu minta murid menunjuk: mana judul, mana sumbu, mana satuan.
+      Ingatkan: grafik tanpa satuan = pembaca menebak-nebak.
+    </div>
+  </section>
+
+  <!-- ============ 8 ============ -->
+  <section class="slide">
+    <span class="snum">08 / 24</span>
+    <p class="eyebrow">Pilihan Grafik</p>
+    <h2 class="title f">5 Jenis Grafik &amp; Kapan Dipakai</h2>
+    <div class="grid g3">
+      <div class="card f"><h3>📊 Batang</h3><p><b>Membandingkan</b> antar kategori.<br>Contoh: berat tiap jenis sampah.</p></div>
+      <div class="card f"><h3>📈 Garis</h3><p><b>Perubahan waktu</b>.<br>Contoh: total sampah 4 minggu.</p></div>
+      <div class="card f"><h3>🥧 Lingkaran</h3><p><b>Bagian dari keseluruhan</b> (maks. 5 potong).<br>Contoh: % kegiatan pakai gawai.</p></div>
+      <div class="card f"><h3>✨ Sebar</h3><p><b>Hubungan dua hal</b>.<br>Contoh: lama gawai vs lama tidur.</p></div>
+      <div class="card gold f"><h3>📶 Histogram</h3><p><b>Sebaran/rentang data</b>.<br>Contoh: murid pakai gawai &lt;1 jam, 1–2 jam, dst.</p></div>
+      <div class="card green f"><h3>💡 Kunci</h3><p>Tanya dulu: <b>“Apa yang ingin saya tunjukkan?”</b></p></div>
+    </div>
+    <div class="foot">
+      <span class="pill time">⏱ 6 menit</span>
+      <span class="pill talk">💬 Tebak grafik: guru sebut tujuan</span>
+    </div>
+    <div class="note">
+      <b>Slide 8 — Lima jenis grafik.</b> Gunakan isyarat tangan: batang = bandingkan, garis = waktu, lingkaran = bagian, sebar = hubungan, histogram = sebaran.
+      Kuis cepat: "Mau tunjukkan sampah makin turun tiap minggu → grafik apa?" (Garis).
+    </div>
+  </section>
+
+  <!-- ============ 9 ============ -->
+  <section class="slide">
+    <span class="snum">09 / 24</span>
+    <p class="eyebrow">Pemandu</p>
+    <h2 class="title f">Tabel Pemandu Memilih Grafik</h2>
+    <table class="f">
+      <tr><th style="width:26%">Tujuan</th><th style="width:26%">Grafik</th><th>Contoh pertanyaan</th></tr>
+      <tr><td>Membandingkan kategori</td><td><b>Batang</b></td><td>Jenis sampah apa yang paling banyak?</td></tr>
+      <tr><td>Perubahan seiring waktu</td><td><b>Garis</b></td><td>Apakah sampah berkurang tiap minggu?</td></tr>
+      <tr><td>Bagian dari keseluruhan</td><td><b>Lingkaran</b> (maks. 5)</td><td>Berapa persen gawai dipakai untuk belajar?</td></tr>
+      <tr><td>Hubungan dua hal</td><td><b>Sebar</b></td><td>Makin lama main gawai, makin sedikit tidur?</td></tr>
+      <tr><td>Sebaran / rentang data</td><td><b>Histogram</b></td><td>Kebanyakan murid pakai gawai berapa jam?</td></tr>
+    </table>
+    <p class="lead f">📌 Simpan tabel ini — akan dipakai saat membuat <span class="hl">mini dashboard</span>.</p>
+    <div class="foot">
+      <span class="pill time">⏱ 4 menit</span>
+      <span class="pill talk">📋 Murid mencatat di buku</span>
+    </div>
+    <div class="note">
+      <b>Slide 9 — Pemandu.</b> Cetak tabel ini sebagai kartu panduan kelompok (satu lembar per kelompok) agar murid tidak bolak-balik bertanya.
+      Ini juga bagian dari UDL: tersedia bantuan visual permanen.
+    </div>
+  </section>
+
+  <!-- ============ 10 ============ -->
+  <section class="slide">
+    <span class="snum">10 / 24</span>
+    <p class="eyebrow">Langkah Membaca Grafik</p>
+    <h2 class="title f">B-A-B-K</h2>
+    <div class="timeline f" style="grid-template-columns:repeat(4,1fr)">
+      <div class="tl"><div class="num">B</div><b>Baca</b><p>Judul, sumbu, satuan, legenda.<br><i>“Grafik ini tentang apa?”</i></p></div>
+      <div class="tl"><div class="num">A</div><b>Amati</b><p>Tertinggi, terendah, pola, keanehan.<br><i>“Apa yang menonjol?”</i></p></div>
+      <div class="tl"><div class="num">B</div><b>Bandingkan</b><p>Antar kategori atau antar waktu.<br><i>“Seberapa besar selisihnya?”</i></p></div>
+      <div class="tl gold"><div class="num">K</div><b>Kesimpulan</b><p>Simpulkan + beri saran.<br><i>“Jadi, apa artinya bagi kita?”</i></p></div>
+    </div>
+    <p class="lead f">🔁 Urutannya jangan dibalik: <span class="hl2">baca dulu</span>, baru menyimpulkan.</p>
+    <div class="foot">
+      <span class="pill time">⏱ 5 menit</span>
+      <span class="pill talk">✋ Guru mencontohkan 1 grafik, murid mengikuti</span>
+    </div>
+    <div class="note">
+      <b>Slide 10 — B-A-B-K.</b> Praktikkan langsung pada grafik batang sampah (slide 12) setelah ini.
+      Minta murid mengucapkan langkahnya bersama: "Baca – Amati – Bandingkan – Kesimpulan".
+    </div>
+  </section>
+
+  <!-- ============ 11 ============ -->
+  <section class="slide">
+    <span class="snum">11 / 24</span>
+    <p class="eyebrow">Menulis Kesimpulan</p>
+    <h2 class="title f">Rumus Kalimat Kesimpulan</h2>
+    <div class="code f">Berdasarkan grafik, <b>[temuan utama]</b>
+karena <b>[bukti angka]</b>.
+Oleh karena itu, <b>[saran / tindakan]</b>.</div>
+    <div class="card gold f">
+      <p style="font-size:20px;line-height:1.45">
+        “Berdasarkan grafik, <b>sisa makanan adalah sampah terbanyak</b> karena mencapai
+        <b>40 kg dari total 90 kg</b>. Oleh karena itu, <b>kampanye menghabiskan makanan
+        perlu diprioritaskan</b>.”
+      </p>
+    </div>
+    <div class="foot">
+      <span class="pill time">⏱ 4 menit</span>
+      <span class="pill talk">✍️ Murid menulis 1 kalimat di buku</span>
+    </div>
+    <div class="note">
+      <b>Slide 11 — Rumus kesimpulan.</b> Tekankan tiga bagian wajib: temuan, bukti angka, saran.
+      Latihan cepat: minta setiap murid menulis satu kalimat kesimpulan tentang grafik batang di slide berikutnya.
+    </div>
+  </section>
+
+  <!-- ============ 12 ============ -->
+  <section class="slide">
+    <span class="snum">12 / 24</span>
+    <p class="eyebrow">Contoh 1 · Diagram Batang</p>
+    <h2 class="title f">Sampah Sekolah per Jenis</h2>
+    <div class="grid g2 f" style="grid-template-columns:1.15fr .85fr;align-items:center">
+      <div>
+        <div class="barchart">
+          <div class="bar"><span class="val">40</span><div class="col hi" style="height:82%"></div></div>
+          <div class="bar"><span class="val">25</span><div class="col" style="height:51%"></div></div>
+          <div class="bar"><span class="val">18</span><div class="col" style="height:37%"></div></div>
+          <div class="bar"><span class="val">7</span><div class="col" style="height:14%"></div></div>
+        </div>
+        <div class="barlabels"><span>Sisa makanan</span><span>Kertas</span><span>Plastik</span><span>Lainnya</span></div>
+        <p class="sub" style="font-size:14px;margin-top:8px">Sumber: pencatatan piket kebersihan · Total 90 kg</p>
+      </div>
+      <div class="card gold">
+        <h3>Interpretasi (B-A-B-K)</h3>
+        <p style="font-size:17px;line-height:1.5">
+          <b>Data:</b> sisa makanan 40 kg dari 90 kg.<br>
+          <b>Banding:</b> &gt; 2× lipat sampah plastik.<br>
+          <b>Kesimpulan:</b> hampir separuh sampah dari makanan.<br>
+          <b>Saran:</b> kampanye “ambil secukupnya, habiskan”.
+        </p>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="pill time">⏱ 5 menit</span>
+      <span class="pill talk">🗣️ Murid membacakan kesimpulan versi sendiri</span>
+    </div>
+    <div class="note">
+      <b>Slide 12 — Contoh batang.</b> Pandu murid membaca grafik dengan urutan B-A-B-K. Tunjuk batang tertinggi, lalu bandingkan dengan yang lain.
+      Tekankan kata "hampir separuh" sebagai bentuk interpretasi, bukan sekadar membaca angka.
+    </div>
+  </section>
+
+  <!-- ============ 13 ============ -->
+  <section class="slide">
+    <span class="snum">13 / 24</span>
+    <p class="eyebrow">Contoh 2 · Diagram Garis</p>
+    <h2 class="title f">Tren Sampah 4 Minggu</h2>
+    <div class="grid g2 f" style="grid-template-columns:1.15fr .85fr;align-items:center">
+      <div>
+        <svg class="svgchart" viewBox="0 0 380 185">
+          <line x1="40" y1="20" x2="40" y2="160" stroke="rgba(120,200,255,.4)" stroke-width="2"/>
+          <line x1="40" y1="160" x2="360" y2="160" stroke="rgba(120,200,255,.4)" stroke-width="2"/>
+          <polyline points="40,30 140,64 240,116 340,155" fill="none"
+                    stroke="#22D3EE" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="40" cy="30" r="8" fill="#FBBF24"/>
+          <circle cx="140" cy="64" r="8" fill="#FBBF24"/>
+          <circle cx="240" cy="116" r="8" fill="#FBBF24"/>
+          <circle cx="340" cy="155" r="8" fill="#FBBF24"/>
+          <text x="40" y="16" fill="#EAF3FC" font-size="15" font-weight="700" text-anchor="middle">90</text>
+          <text x="140" y="52" fill="#EAF3FC" font-size="15" font-weight="700" text-anchor="middle">82</text>
+          <text x="240" y="104" fill="#EAF3FC" font-size="15" font-weight="700" text-anchor="middle">70</text>
+          <text x="340" y="143" fill="#EAF3FC" font-size="15" font-weight="700" text-anchor="middle">61</text>
+          <text x="40" y="180" fill="#A8C0DA" font-size="14" text-anchor="middle">Mg 1</text>
+          <text x="140" y="180" fill="#A8C0DA" font-size="14" text-anchor="middle">Mg 2</text>
+          <text x="240" y="180" fill="#A8C0DA" font-size="14" text-anchor="middle">Mg 3</text>
+          <text x="340" y="180" fill="#A8C0DA" font-size="14" text-anchor="middle">Mg 4</text>
+        </svg>
+        <p class="sub" style="font-size:14px">Kampanye bekal &amp; botol minum dimulai minggu ke-2 · Satuan: kg</p>
+      </div>
+      <div class="card">
+        <h3>Interpretasi</h3>
+        <p style="font-size:17px;line-height:1.5">
+          • Turun tiap minggu: <b>90 → 61 kg</b> (≈ 29 kg).<br>
+          • Kampanye <b>mungkin</b> berpengaruh.<br>
+          • Perlu data lebih panjang untuk memastikan.<br>
+          • Pakai kata <b>“cenderung”</b>, bukan “pasti”.
+        </p>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="pill time">⏱ 5 menit</span>
+      <span class="pill talk">❓ “Berapa kg penurunannya?”</span>
+    </div>
+    <div class="note">
+      <b>Slide 13 — Contoh garis.</b> Hitung bersama: 90 − 61 = 29 kg. Tanyakan: "Apakah kampanye pasti penyebabnya?"
+      Jawaban yang diharapkan: belum tentu, karena bisa ada faktor lain (misal minggu ke-4 ada ujian sehingga murid lebih sedikit).
+    </div>
+  </section>
+
+  <!-- ============ 14 ============ -->
+  <section class="slide">
+    <span class="snum">14 / 24</span>
+    <p class="eyebrow">Contoh 3 &amp; 4</p>
+    <h2 class="title f">Lingkaran &amp; Sebar</h2>
+    <div class="grid g2 f" style="align-items:start">
+      <div class="card">
+        <h3>🥧 Kegiatan Saat Memakai Gawai</h3>
+        <div style="display:flex;gap:20px;align-items:center;margin-top:6px">
+          <div class="pie"></div>
+          <div class="legend">
+            <span><i class="lg-c1"></i>Media sosial 35%</span>
+            <span><i class="lg-c2"></i>Game 25%</span>
+            <span><i class="lg-c3"></i>Belajar 20%</span>
+            <span><i class="lg-c4"></i>Menonton 15%</span>
+            <span><i class="lg-c5"></i>Lainnya 5%</span>
+          </div>
+        </div>
+        <p style="font-size:16px;margin-top:10px;color:#CBDFF2">
+          Medsos + game = <b>60%</b>, belajar <b>20%</b>. Bukan berarti gawai itu buruk —
+          yang dilihat adalah <b>keseimbangan</b>.
+        </p>
+      </div>
+      <div class="card gold">
+        <h3>✨ Gawai vs Waktu Tidur</h3>
+        <svg class="svgchart" viewBox="0 0 380 175" style="margin-top:4px">
+          <line x1="34" y1="12" x2="34" y2="150" stroke="rgba(120,200,255,.4)" stroke-width="2"/>
+          <line x1="34" y1="150" x2="368" y2="150" stroke="rgba(120,200,255,.4)" stroke-width="2"/>
+          <line x1="40" y1="30" x2="340" y2="150" stroke="#FBBF24" stroke-width="2"
+                stroke-dasharray="7 7" opacity=".75"/>
+          <circle cx="40" cy="30" r="8" fill="#22D3EE"/>
+          <circle cx="100" cy="54" r="8" fill="#22D3EE"/>
+          <circle cx="160" cy="78" r="8" fill="#22D3EE"/>
+          <circle cx="220" cy="102" r="8" fill="#22D3EE"/>
+          <circle cx="280" cy="126" r="8" fill="#22D3EE"/>
+          <circle cx="340" cy="150" r="8" fill="#22D3EE"/>
+          <text x="34" y="172" fill="#A8C0DA" font-size="13">1 jam</text>
+          <text x="340" y="172" fill="#A8C0DA" font-size="13" text-anchor="middle">6 jam</text>
+        </svg>
+        <p style="font-size:16px;margin-top:6px;color:#FDE68A">
+          ⚠️ Pola <b>menurun</b> = ada <b>hubungan</b>, belum tentu <b>sebab-akibat</b>.
+          Tulis “<b>cenderung</b>”, jangan “pasti”.
+        </p>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="pill time">⏱ 5 menit</span>
+      <span class="pill talk">❓ “Bolehkah bilang gawai menyebabkan kurang tidur?”</span>
+    </div>
+    <div class="note">
+      <b>Slide 14 — Lingkaran &amp; sebar.</b> Ini slide paling penting untuk menanamkan kehati-hatian menyimpulkan.
+      Bisa jadi murid kurang tidur karena banyak tugas atau jadwal les. Grafik hanya menunjukkan <i>kecenderungan</i>.
+    </div>
+  </section>
+
+  <!-- ============ 15 ============ -->
+  <section class="slide">
+    <span class="snum">15 / 24</span>
+    <p class="eyebrow">Waspada</p>
+    <h2 class="title f">Grafik yang Menyesatkan</h2>
+    <table class="tight f">
+      <tr><th style="width:34%">Kesalahan</th><th style="width:32%">Mengapa bermasalah</th><th>Perbaikan</th></tr>
+      <tr><td>Tanpa judul / satuan / sumber</td><td>Pembaca bingung</td><td>Lengkapi bagian grafik</td></tr>
+      <tr><td>Sumbu Y tidak mulai dari 0</td><td>Selisih tampak jauh lebih besar</td><td>Mulai dari 0</td></tr>
+      <tr><td>Lingkaran terlalu banyak potongan</td><td>Sulit dibandingkan</td><td>Pakai diagram batang</td></tr>
+      <tr><td>Terlalu banyak warna / efek 3D</td><td>Mengalihkan perhatian dari data</td><td>Sederhana dan konsisten</td></tr>
+      <tr><td>Garis untuk kategori tak berurutan</td><td>Garis menyiratkan urutan waktu</td><td>Pakai diagram batang</td></tr>
+      <tr><td>Menyimpulkan melebihi data</td><td>Kesimpulan menyesatkan</td><td>Pakai “cenderung”, “diduga” + batasan data</td></tr>
+    </table>
+    <div class="foot">
+      <span class="pill time">⏱ 5 menit</span>
+      <span class="pill talk">🔎 “Temukan yang salah” pada 1 gambar</span>
+    </div>
+    <div class="note">
+      <b>Slide 15 — Kesalahan umum.</b> Tunjukkan satu grafik "nakal" (sumbu Y mulai dari 80) lalu minta murid menemukan kesalahannya.
+      Pesan kunci: grafik yang jujur tidak boleh membesar-besarkan perbedaan.
+    </div>
+  </section>
+
+  <!-- ============ 16 ============ -->
+  <section class="slide">
+    <span class="snum">16 / 24</span>
+    <p class="eyebrow">Inti Materi</p>
+    <h2 class="title f">Apa Itu Data Storytelling?</h2>
+    <p class="lead f">Menyampaikan data sebagai <span class="hl2">cerita</span> yang mudah dipahami dan mendorong tindakan.</p>
+    <div class="grid g3">
+      <div class="card f"><h3>📊 Data</h3><p>Angka yang benar dan cukup, bukan tebakan.</p></div>
+      <div class="card f"><h3>🖼️ Visual</h3><p>Grafik yang tepat, jelas, dan jujur.</p></div>
+      <div class="card gold f"><h3>🗣️ Narasi</h3><p>Kalimat yang menjelaskan makna dan saran.</p></div>
+    </div>
+    <div class="chips f" style="margin-top:2px">
+      <span class="chip">1️⃣ Pemantik — menarik perhatian</span>
+      <span class="chip">2️⃣ Data — tunjukkan bukti</span>
+      <span class="chip">3️⃣ Insight — temuan utama</span>
+      <span class="chip gold">4️⃣ Aksi — apa yang harus dilakukan</span>
+    </div>
+    <div class="foot">
+      <span class="pill time">⏱ 5 menit</span>
+      <span class="pill talk">💬 “Cerita apa di balik angkamu?”</span>
+    </div>
+    <div class="note">
+      <b>Slide 16 — Data storytelling.</b> Analogi: dokter tidak hanya menunjukkan hasil rontgen, tetapi menjelaskan artinya dan memberi resep.
+      Grafik = rontgen, interpretasi = penjelasan dokter, saran = resep.
+    </div>
+  </section>
+
+  <!-- ============ 17 ============ -->
+  <section class="slide">
+    <span class="snum">17 / 24</span>
+    <p class="eyebrow">Produk Akhir</p>
+    <h2 class="title f">Mini Dashboard / Infografis</h2>
+    <div class="grid g2 f" style="grid-template-columns:1.1fr .9fr">
+      <div class="wire">
+        <div class="wt">📌 JUDUL: “Sampah Sekolah Minggu 1–4”</div>
+        <div class="wrow">
+          <div class="wkpi">90<small>kg minggu 1</small></div>
+          <div class="wkpi">61<small>kg minggu 4</small></div>
+          <div class="wkpi">29<small>kg turun</small></div>
+          <div class="wkpi">44%<small>sisa makanan</small></div>
+        </div>
+        <div class="wmid">
+          <div class="wbox"><b>GRAFIK UTAMA</b>Diagram garis tren 4 minggu</div>
+          <div class="wbox"><b>GRAFIK PENDUKUNG</b>Diagram batang jenis sampah</div>
+        </div>
+        <div class="wbox" style="min-height:auto"><b>KESIMPULAN + SARAN</b>Sampah cenderung turun. Lanjutkan kampanye bekal.</div>
+      </div>
+      <div>
+        <div class="card green" style="margin-bottom:12px">
+          <h3>Wajib ada</h3>
+          <p>Judul · 1–3 grafik · angka kunci · kesimpulan · sumber data.</p>
+        </div>
+        <div class="card">
+          <h3>Boleh pakai</h3>
+          <p>Kertas karton &amp; spidol, atau spreadsheet (Google Sheets / Excel).</p>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="pill time">⏱ 4 menit</span>
+      <span class="pill talk">👀 Guru menunjukkan contoh jadi</span>
+    </div>
+    <div class="note">
+      <b>Slide 17 — Mini dashboard.</b> Tunjukkan contoh nyata (misal infografis dari media) sebagai pembanding.
+      Tegaskan: dashboard bukan kumpulan grafik acak, tetapi grafik yang <i>saling mendukung satu cerita</i>.
+    </div>
+  </section>
+
+  <!-- ============ 18 ============ -->
+  <section class="slide">
+    <span class="snum">18 / 24</span>
+    <p class="eyebrow">Project Based Learning · Kelompok 3–4 Orang</p>
+    <h2 class="title f">Misi Kelompok: 5 Langkah</h2>
+    <ol class="steps">
+      <li class="f"><b>Pilih tema:</b> sampah sekolah <i>atau</i> kebiasaan gawai.</li>
+      <li class="f"><b>Kumpulkan data</b> dari tabel yang disiapkan guru / hasil pengamatan.</li>
+      <li class="f"><b>Pilih grafik</b> memakai tabel pemandu + tentukan angka kunci.</li>
+      <li class="f"><b>Rancang mini dashboard</b> di kertas atau spreadsheet.</li>
+      <li class="f"><b>Tulis kesimpulan + saran</b> dengan rumus kalimat, lalu presentasi 2 menit.</li>
+    </ol>
+    <div class="chips f">
+      <span class="chip">🧮 Penghimpun data</span>
+      <span class="chip">🎨 Pembuat grafik</span>
+      <span class="chip">✍️ Penulis kesimpulan</span>
+      <span class="chip gold">🎤 Juru bicara</span>
+    </div>
+    <div class="foot">
+      <span class="pill time">⏱ 18 menit kerja + 6 menit presentasi</span>
+      <span class="pill talk">👥 Kerja kelompok, guru berkeliling</span>
+    </div>
+    <div class="note">
+      <b>Slide 18 — Instruksi proyek.</b> Bagi kelompok 3–4 orang secara heterogen (campur kemampuan).
+      Ingatkan pembagian peran agar semua terlibat. Sediakan kartu panduan grafik + data mentah di tiap meja.
+      Guru berkeliling dan bertanya: "Apa temuan utamamu? Apa bukti angkanya?"
+    </div>
+  </section>
+
+  <!-- ============ 19 ============ -->
+  <section class="slide">
+    <span class="snum">19 / 24</span>
+    <p class="eyebrow">Cek Sebelum Kumpul</p>
+    <h2 class="title f">Daftar Periksa Dashboard</h2>
+    <div class="grid g2 f">
+      <div class="card green">
+        <h3>✅ Sudah benar</h3>
+        <p style="font-size:19px;line-height:1.7">
+          ☐ Ada judul yang jelas<br>
+          ☐ Ada satuan (kg / % / jam)<br>
+          ☐ Grafik sesuai tujuan<br>
+          ☐ Sumbu Y mulai dari 0<br>
+          ☐ Ada sumber data
+        </p>
+      </div>
+      <div class="card gold">
+        <h3>✅ Sudah kuat</h3>
+        <p style="font-size:19px;line-height:1.7">
+          ☐ Kesimpulan menyebut angka bukti<br>
+          ☐ Ada saran yang bisa dilakukan<br>
+          ☐ Pakai kata “cenderung”, bukan “pasti”<br>
+          ☐ Warna tidak berlebihan<br>
+          ☐ Bisa dijelaskan dalam 2 menit
+        </p>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="pill time">⏱ 3 menit</span>
+      <span class="pill talk">🔍 Cek silang dengan kelompok lain</span>
+    </div>
+    <div class="note">
+      <b>Slide 19 — Daftar periksa.</b> Minta setiap kelompok menukar dashboard dengan kelompok lain untuk saling memeriksa menggunakan daftar ini.
+      Ini sekaligus melatih kemampuan memberi umpan balik yang santun.
+    </div>
+  </section>
+
+  <!-- ============ 20 ============ -->
+  <section class="slide">
+    <span class="snum">20 / 24</span>
+    <p class="eyebrow">Asesmen</p>
+    <h2 class="title f">Rubrik Penilaian</h2>
+    <table class="tight f">
+      <tr><th style="width:18%">Aspek</th><th>Perlu Bimbingan (1)</th><th>Berkembang (2)</th><th>Cakap (3)</th><th>Mahir (4)</th></tr>
+      <tr><td>Pemahaman konsep</td><td>Belum bisa membedakan jenis grafik</td><td>Menyebut sebagian jenis grafik</td><td>Menjelaskan fungsi + contoh</td><td>Menjelaskan + alasan pemilihan</td></tr>
+      <tr><td>Penerapan (grafik &amp; kesimpulan)</td><td>Grafik tidak sesuai data</td><td>Cukup sesuai, unsur belum lengkap</td><td>Tepat, rapi, kesimpulan tajam</td><td>Tepat + saran + sebut batasan data</td></tr>
+      <tr><td>Kolaborasi &amp; komunikasi</td><td>Kurang terlibat</td><td>Terlibat, tugas belum merata</td><td>Aktif, menyampaikan hasil jelas</td><td>Mengajak, runtut, menerima masukan</td></tr>
+      <tr><td>Kemandirian &amp; refleksi</td><td>Bergantung penuh</td><td>Refleksi singkat</td><td>Refleksi jelas</td><td>Refleksi mendalam + rencana konkret</td></tr>
+    </table>
+    <p class="lead f">🧮 Nilai = (jumlah skor ÷ 16) × 100</p>
+    <div class="foot">
+      <span class="pill time">⏱ 3 menit</span>
+      <span class="pill talk">📝 Guru menjelaskan kriteria</span>
+    </div>
+    <div class="note">
+      <b>Slide 20 — Rubrik.</b> Jelaskan rubrik <i>sebelum</i> presentasi agar murid tahu targetnya. Skor maksimal 16.
+      Sampaikan juga aturan umpan balik: sebut 1 hal bagus, 1 hal yang bisa diperbaiki, 1 saran konkret.
+    </div>
+  </section>
+
+  <!-- ============ 21 ============ -->
+  <section class="slide">
+    <span class="snum">21 / 24</span>
+    <p class="eyebrow">Cek Pemahaman</p>
+    <h2 class="title f">Kuis Kilat 🎯</h2>
+    <ol class="steps">
+      <li class="f">Ingin menunjukkan perubahan sampah 6 minggu. Grafik apa? Mengapa?</li>
+      <li class="f">Ingin menunjukkan persentase kegiatan pakai gawai. Grafik apa, maksimal berapa kategori?</li>
+      <li class="f">Sebutkan tiga bagian grafik yang wajib ada.</li>
+      <li class="f">Sumbu Y dimulai dari 80, bukan 0. Apa dampaknya?</li>
+      <li class="f">Bolehkah menulis “gawai menyebabkan kurang tidur”?</li>
+    </ol>
+    <div class="foot">
+      <span class="pill time">⏱ 6 menit</span>
+      <span class="pill talk">✋ Tunjuk tangan / tulis di buku</span>
+    </div>
+    <div class="note">
+      <b>Slide 21 — Kuis kilat. Kunci jawaban:</b><br>
+      1) Grafik garis — data berurutan menurut waktu, ingin melihat tren naik/turun.<br>
+      2) Diagram lingkaran, maksimal ±5 kategori (diagram batang juga boleh).<br>
+      3) Contoh: judul, sumbu + satuan, legenda atau sumber data.<br>
+      4) Perbedaan antar batang tampak jauh lebih besar dari aslinya → pembaca salah menilai.<br>
+      5) Tidak boleh. Grafik hanya menunjukkan hubungan/kecenderungan, bukan sebab-akibat. Tulis “cenderung berhubungan”.
+    </div>
+  </section>
+
+  <!-- ============ 22 ============ -->
+  <section class="slide">
+    <span class="snum">22 / 24</span>
+    <p class="eyebrow">Rangkuman</p>
+    <h2 class="title f">Poin Penting Hari Ini</h2>
+    <ul class="bullets">
+      <li class="f">Visualisasi mengubah angka jadi gambar; interpretasi memberi makna.</li>
+      <li class="f">Pilih grafik sesuai tujuan: batang, garis, lingkaran, sebar, histogram.</li>
+      <li class="f">Baca grafik dengan B-A-B-K, jangan melompat ke kesimpulan.</li>
+      <li class="f">Kesimpulan wajib disertai bukti angka dan saran.</li>
+      <li class="f">Jangan menyimpulkan lebih dari yang ditunjukkan data.</li>
+    </ul>
+    <div class="foot">
+      <span class="pill time">⏱ 3 menit</span>
+      <span class="pill talk">🗣️ Murid mengulang satu poin favorit</span>
+    </div>
+    <div class="note">
+      <b>Slide 22 — Rangkuman.</b> Minta 3 murid menyebut satu poin yang paling mereka ingat dengan bahasa sendiri.
+      Ini membantu guru mengecek pemahaman sekaligus menutup materi.
+    </div>
+  </section>
+
+  <!-- ============ 23 ============ -->
+  <section class="slide">
+    <span class="snum">23 / 24</span>
+    <p class="eyebrow">Refleksi &amp; Tindak Lanjut</p>
+    <h2 class="title f">Sebelum Kita Tutup</h2>
+    <div class="grid g2 f">
+      <div class="card">
+        <h3>🪞 Refleksi (2 menit)</h3>
+        <p style="font-size:18px;line-height:1.6">
+          • Grafik apa yang kupilih dan mengapa?<br>
+          • Bagian mana yang paling sulit?<br>
+          • Jika mengulang, apa yang akan kuperbaiki?
+        </p>
+      </div>
+      <div class="card gold">
+        <h3>🚀 Tindak Lanjut</h3>
+        <p style="font-size:18px;line-height:1.6">
+          • Rapikan mini dashboard kelompok.<br>
+          • Cari 1 grafik di media, nilai: jujur atau menyesatkan?<br>
+          • Kumpulkan pertemuan berikutnya.
+        </p>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="pill time">⏱ 4 menit</span>
+      <span class="pill talk">📓 Tulis di buku refleksi</span>
+    </div>
+    <div class="note">
+      <b>Slide 23 — Refleksi &amp; tindak lanjut.</b> Refleksi ditulis individu, bukan kelompok, agar terlihat kontribusi tiap murid.
+      Tugas "cari grafik di media" menjadi jembatan ke pertemuan berikutnya.
+    </div>
+  </section>
+
+  <!-- ============ 24 ============ -->
+  <section class="slide cover" style="align-items:flex-start">
+    <span class="snum">24 / 24</span>
+    <p class="eyebrow f">SMP NEGERI 19 KOTA BEKASI · TIM MGMP INFORMATIKA</p>
+    <h1 class="f" style="font-size:54px">Terima Kasih! 🙌</h1>
+    <div class="rule f"></div>
+    <p class="quote f">“Angka yang baik bercerita,<br>grafik yang jujur meyakinkan.”</p>
+    <div class="chips f">
+      <span class="chip">Informatika Kelas VIII</span>
+      <span class="chip">Analisis Data</span>
+      <span class="chip gold">Data Storytelling</span>
+    </div>
+    <div class="note">
+      <b>Slide 24 — Penutup.</b> Akhiri dengan kalimat motivasi. Ajak murid bertepuk tangan untuk kerja kelompok hari ini.
+      Ingatkan tenggat pengumpulan dashboard.
+    </div>
+  </section>
+
+</div>
+
+<div id="bar"></div>
+<div id="hint">Klik / tekan → untuk lanjut &nbsp;·&nbsp; <b>T</b> = catatan guru</div>
+<div id="hud">
+  <button id="btnPrev" title="Sebelumnya">◀</button>
+  <span id="counter">1 / 24</span>
+  <button id="btnNext" title="Berikutnya">▶</button>
+  <button id="btnNotes" title="Catatan guru (T)">📝</button>
+  <button id="btnFull" title="Layar penuh (F)">⛶</button>
+</div>
+<div id="notes"></div>
+
+<script>
+(function(){
+  const stage   = document.getElementById('stage');
+  const slides  = Array.from(document.querySelectorAll('.slide'));
+  const bar     = document.getElementById('bar');
+  const counter = document.getElementById('counter');
+  const hint    = document.getElementById('hint');
+  const notes   = document.getElementById('notes');
+  let cur = 0;
+
+  /* ---- scaling 16:9 ---- */
+  function resize(){
+    const s = Math.min(window.innerWidth / 1280, (window.innerHeight - 70) / 720);
+    stage.style.transform = `translate(-50%,-50%) scale(${s})`;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  /* ---- render ---- */
+  function showSlide(i, revealAll){
+    cur = Math.max(0, Math.min(slides.length - 1, i));
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === cur));
+    const frags = slides[cur].querySelectorAll('.f');
+    frags.forEach(f => f.classList.remove('show'));
+    if (revealAll) frags.forEach(f => f.classList.add('show'));
+    updateHud();
+    updateNotes();
+  }
+
+  function updateHud(){
+    counter.textContent = (cur + 1) + ' / ' + slides.length;
+    bar.style.width = ((cur + 1) / slides.length * 100) + '%';
+    if (cur > 0) hint.style.opacity = 0;
+  }
+
+  function updateNotes(){
+    const n = slides[cur].querySelector('.note');
+    notes.innerHTML = '<b>CATATAN GURU — SLIDE ' + (cur + 1) + '</b><br>' +
+                      (n ? n.innerHTML : '—');
+  }
+
+  /* ---- navigasi bertahap ---- */
+  function next(){
+    const pending = slides[cur].querySelectorAll('.f:not(.show)');
+    if (pending.length) { pending[0].classList.add('show'); }
+    else if (cur < slides.length - 1) { showSlide(cur + 1, false); }
+  }
+
+  function prev(){
+    const shown = slides[cur].querySelectorAll('.f.show');
+    if (shown.length) { shown[shown.length - 1].classList.remove('show'); }
+    else if (cur > 0) { showSlide(cur - 1, true); }
+  }
+
+  /* ---- kontrol ---- */
+  document.getElementById('btnNext').addEventListener('click', e => { e.stopPropagation(); next(); });
+  document.getElementById('btnPrev').addEventListener('click', e => { e.stopPropagation(); prev(); });
+  document.getElementById('btnNotes').addEventListener('click', e => {
+    e.stopPropagation(); notes.classList.toggle('show');
+  });
+  document.getElementById('btnFull').addEventListener('click', e => {
+    e.stopPropagation();
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  });
+
+  document.addEventListener('click', e => {
+    if (e.target.closest('#hud') || e.target.closest('#notes')) return;
+    next();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(e.key)) { e.preventDefault(); next(); }
+    if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
+    if (e.key === 'Home') showSlide(0, false);
+    if (e.key === 'End')  showSlide(slides.length - 1, true);
+    if (e.key.toLowerCase() === 't') { notes.classList.toggle('show'); }
+    if (e.key.toLowerCase() === 'f') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  showSlide(0, false);
+})();
+</script>
+</body>
+</html>
